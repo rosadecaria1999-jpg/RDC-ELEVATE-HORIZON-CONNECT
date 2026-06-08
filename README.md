@@ -57,9 +57,7 @@ Event registration screen:
 
 Settings screen:
 - Light and dark theme toggle
-- Sound on or off toggle
-- Font size selector (Small, Medium, Large)
-- Saves the settings so they stay after closing the app
+
 
 Backend connection:
 - Gets all the events from the API
@@ -75,3 +73,6 @@ Backend connection:
 - Make the "View Today's Events" button work
 - Add a "My Registrations" screen
 - Final design check and testing
+- Sound on or off toggle
+- Font size selector (Small, Medium, Large)
+- Saves the settings so they stay after closing the app

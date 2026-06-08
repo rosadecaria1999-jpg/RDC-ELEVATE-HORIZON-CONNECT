@@ -1,14 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Switch, RadioButton, Divider, useTheme } from 'react-native-paper';
+import { Text, Switch, useTheme } from 'react-native-paper';
 import { useAppPreferences } from '../components/AppPreferencesContext';
 
 const SettingsScreen = () => {
-  const {
-    isDarkMode, toggleDarkMode,
-    soundEnabled, toggleSound,
-    fontSize, setFontSize,
-  } = useAppPreferences();
+  const { isDarkMode, toggleDarkMode } = useAppPreferences();
   const theme = useTheme();
 
   return (
@@ -27,24 +23,6 @@ const SettingsScreen = () => {
         </Text>
         <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
       </View>
-
-      <Divider style={styles.divider} />
-
-      {/* Sound Toggle */}
-      <View style={styles.row}>
-        <Text style={styles.label}>Enable Sounds</Text>
-        <Switch value={soundEnabled} onValueChange={toggleSound} />
-      </View>
-
-      <Divider style={styles.divider} />
-
-      {/* Font Size */}
-      <Text style={styles.sectionLabel}>Font Size</Text>
-      <RadioButton.Group onValueChange={setFontSize} value={fontSize}>
-        <RadioButton.Item label="Small" value="small" position="trailing" />
-        <RadioButton.Item label="Medium" value="medium" position="trailing" />
-        <RadioButton.Item label="Large" value="large" position="trailing" />
-      </RadioButton.Group>
     </ScrollView>
   );
 };
@@ -70,14 +48,5 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '500',
-  },
-  sectionLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  divider: {
-    marginVertical: 8,
   },
 });
