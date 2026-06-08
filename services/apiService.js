@@ -80,7 +80,7 @@ export async function getEventById(id) {
 
 export async function registerForEvent(eventId, fullName, email) {
     try { 
-        const response = await fetch(`${API_BASE_URL}/registration`,
+        const response = await fetch(`${API_BASE_URL}/registrations`,
             {
                 method: "POST",
                 headers: {
@@ -106,6 +106,10 @@ export async function registerForEvent(eventId, fullName, email) {
         }
         
     } catch (error) {
-        console.log("api error" , error.message)        
+        console.log("api error" , error.message);
+        return {
+            success: false,
+            error: error.message || "Network error"
+        };     
     }
 }

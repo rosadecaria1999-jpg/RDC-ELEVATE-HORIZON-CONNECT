@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "rdc-elevate-horizon-connect-3",
-    "slug": "rdc-elevate-horizon-connect-3",
+    "name": "rdc-elevate-horizon-connect",
+    "slug": "rdc-elevate-horizon-connect",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
