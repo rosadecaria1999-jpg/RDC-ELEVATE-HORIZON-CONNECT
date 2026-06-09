@@ -8,6 +8,7 @@ function delay(ms) {
 
 export async function getAllEvents() {
     try { 
+        // to remove in the final version of the application
         await delay(1000); 
         const response = await fetch(`${API_BASE_URL}/events`);
         if(!response.ok) {

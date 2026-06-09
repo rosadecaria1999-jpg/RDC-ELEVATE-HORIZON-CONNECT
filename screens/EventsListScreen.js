@@ -1,21 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Searchbar, Chip } from 'react-native-paper';
+import { Searchbar, Surface, Button } from 'react-native-paper';
 import { getAllEvents } from '../services/apiService';
-
-const CATEGORIES = [ 'All Events' ,'Today','Athletics', 'Fitness', 'Music', 'Social', 'Outdoors', 'Family'];
+import { useAppPreferences } from '../components/AppPreferencesContext';
 
 const EventsListScreen = ({ navigation }) => {
+  const { theme } = useAppPreferences();
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const categories = ['All', 'Today', 'Education', 'Fitness', 'Music', 'Community', 'Outdoor', 'Entertainment', 'Technology', 'Food', 'Arts', 'Health', 'Networking'];
+
   const [loading, setLoading] = useState(true);
   const [offline, setOffline] = useState(false);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Events');
 
   useEffect(() => {
     loadEvents();
   }, []);
+
+  useEffect(() => {
+    let updated = [...events];
+
+    // Filter by category
+    if (selectedCategory === 'Today') {
+      const today = new Date().toISOString().split('T')[0];
+      updated = updated.filter((e) => e.date.startsWith(today));
+    } else if (selectedCategory !== 'All') {
+      updated = updated.filter((e) => e.category === selectedCategory);
+    }
+
+    // Filter by search text
+    if (searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase();
+      updated = updated.filter(
+        (e) =>
+          e.title.toLowerCase().includes(q) ||
+          e.description.toLowerCase().includes(q)
+      );
+    }
+
+    setFilteredEvents(updated);
+  }, [events, selectedCategory, searchQuery]);
 
   async function loadEvents() {
     setLoading(true);
@@ -39,61 +67,71 @@ const EventsListScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
-      {/* Offline banner */}
+    <Surface style={{ flex: 1, padding: 12 }} elevation={5}>
       {offline && (
-        <View style={styles.offlineBanner}>
-          <Text style={styles.offlineText}>Offline Mode</Text>
+        <View style={{ backgroundColor: 'yellow', padding: 10, marginBottom: 10, borderRadius: 5 }}>
+          <Text style={{ fontWeight: 'bold', color: '#333', textAlign: 'center' }}>
+            You are currently working offline
+          </Text>
         </View>
       )}
 
-      {/* Search bar */}
-      <Searchbar
-        placeholder="Search Events..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        style={styles.searchbar}
-        inputStyle={styles.searchInput}
-      />
+      {error && (
+        <View style={{ backgroundColor: 'red', padding: 10, marginBottom: 10, borderRadius: 5 }}>
+          <Text style={{ fontWeight: 'bold', color: 'white', textAlign: 'center' }}>
+            Error: {error}
+          </Text>
+        </View>
+      )}
 
-      {/* Category chips */}
-      <View style={styles.chipsContainer}>
-        {CATEGORIES.map((cat) => {
-          const isSelected = selectedCategory === cat;
-          return (
-            <Chip
+      <View style={styles.container}>
+        {/* Search bar */}
+        <Searchbar
+          placeholder="Search Events..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={styles.searchbar}
+          inputStyle={{ fontSize: theme?.fonts?.bodyLarge?.fontSize || 15 }}
+          iconColor={theme?.colors?.onSurface}
+        />
+
+        {/* Category filters */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 16, gap: 8 }}>
+          {categories.map((cat) => (
+            <Button
               key={cat}
-              selected={isSelected}
+              compact={true}
+              mode={selectedCategory === cat ? 'contained' : 'outlined'}
               onPress={() => setSelectedCategory(cat)}
-              showSelectedCheck={false}
-              style={[styles.chip, isSelected && styles.chipSelected]}
-              textStyle={isSelected ? styles.chipTextSelected : styles.chipText}
+              style={{ marginRight: 2, marginBottom: 2 }}
+              buttonColor={selectedCategory === cat ? theme.colors.primary : theme.colors.surfaceVariant}
+              textColor={selectedCategory === cat ? 'white' : theme.colors.onSurfaceVariant}
             >
               {cat}
-            </Chip>
-          );
-        })}
-      </View>
+            </Button>
+          ))}
+        </View>
 
-      {/* Events list */}
-      <FlatList
-        data={events}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContent}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('EventDetails', { event: item, offline })}
-          >
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>{item?.title}</Text>
-              <Text>{item?.date}</Text>
-              <Text>{item?.location}</Text>
-              <Text>Spots: {item?.spotsRemaining}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
+        {/* Events list */}
+        <FlatList
+          data={filteredEvents}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.listContent}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('EventDetails', { event: item, offline })}
+            >
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>{item?.title}</Text>
+                <Text>{item?.date}</Text>
+                <Text>{item?.location}</Text>
+                <Text>Spots: {item?.spotsRemaining}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+    </Surface>
   );
 };
 
@@ -102,7 +140,7 @@ export default EventsListScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3F88B8',   // matches home screen
+    backgroundColor: '#3F88B8',
     padding: 16,
   },
   centered: {
@@ -110,34 +148,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  offlineBanner: {
-    backgroundColor: '#ffe9a8',
-    padding: 8,
-    borderRadius: 6,
-    marginBottom: 12,
-  },
-  offlineText: { textAlign: 'center', fontWeight: 'bold' },
-
   searchbar: {
     backgroundColor: 'white',
     borderRadius: 30,
     marginBottom: 12,
     elevation: 0,
   },
-  searchInput: { fontSize: 15 },
-
-  chipsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
-  },
-  chip: { backgroundColor: 'white' },
-  chipSelected: { backgroundColor: '#7BB0CE' },
-  chipText: { color: '#333' },
-  chipTextSelected: { color: 'white', fontWeight: 'bold' },
-
   listContent: { paddingBottom: 20 },
   card: {
     padding: 16,

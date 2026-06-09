@@ -1,18 +1,22 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Card, Button } from 'react-native-paper';
+import { Card, Button, useTheme } from 'react-native-paper';
 import { Audio } from 'expo-av';
+import { useAppPreferences } from '../components/AppPreferencesContext';
+
 
 const imageIndex = {
   logo: require('../assets/images/Logo.jpg'),
 };
 
 const HomeScreen = () => {
+
+
   // ─── Audio playback ───
   const playSound = async () => {
     try {
       const { sound } = await Audio.Sound.createAsync(
-        require('../assets/audio/sound.mp3')   
+        require('../assets/audio/sound.mp3')
       );
       await sound.playAsync();
 
@@ -56,7 +60,7 @@ const HomeScreen = () => {
             mode="outlined"
             style={styles.welcomeButton}
             textColor="#333"
-            onPress={() => {}}
+            onPress={() => { }}
           >
             View Today's Events
           </Button>
