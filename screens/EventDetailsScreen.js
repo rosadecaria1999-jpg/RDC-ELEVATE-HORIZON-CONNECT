@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { Card, Button } from 'react-native-paper';
+import { Card, Button, useTheme } from 'react-native-paper';
 import { getEventById } from '../services/apiService';
 
 const EventDetailsScreen = ({ route, navigation }) => {
+  // Gets the current theme (light or dark) from PaperProvider
+  const theme = useTheme();
   const { event, offline } = route.params;
 
   const [eventDetails, setEventDetails] = useState(null);
@@ -39,17 +41,17 @@ const EventDetailsScreen = ({ route, navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <View style={[styles.center, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" />
-        <Text>Loading event...</Text>
+        <Text style={{ color: theme.colors.onBackground }}>Loading event...</Text>
       </View>
     );
   }
 
   if (error || !eventDetails) {
     return (
-      <View style={styles.center}>
-        <Text>Error: {error || 'Event not found'}</Text>
+      <View style={[styles.center, { backgroundColor: theme.colors.background }]}>
+        <Text style={{ color: theme.colors.onBackground }}>Error: {error || 'Event not found'}</Text>
       </View>
     );
   }
@@ -57,27 +59,21 @@ const EventDetailsScreen = ({ route, navigation }) => {
   const noSpotsLeft = eventDetails.spotsRemaining === 0;
 
   return (
-    <ScrollView style={styles.container}>
-      <Card style={styles.card}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
         <Card.Content>
-          <Text style={styles.title}>{eventDetails.title}</Text>
+          <Text style={[styles.title, { color: theme.colors.onSurface }]}>{eventDetails.title}</Text>
 
-          <Row label="Category"        value={eventDetails.category} />
-          <Row label="Date"            value={eventDetails.date} />
-          <Row label="Time"            value={`${eventDetails.startTime} - ${eventDetails.endTime}`} />
-          <Row label="Location"        value={eventDetails.location} />
-          <Row label="Description"     value={eventDetails.description} />
-          <Row label="Capacity"        value={eventDetails.capacity} />
-          <Row label="Spots Remaining" value={eventDetails.spotsRemaining} />
+          <Row label="Category"        value={eventDetails.category} theme={theme} />
+          <Row label="Date"            value={eventDetails.date} theme={theme} />
+          <Row label="Time"            value={`${eventDetails.startTime} - ${eventDetails.endTime}`} theme={theme} />
+          <Row label="Location"        value={eventDetails.location} theme={theme} />
+          <Row label="Description"     value={eventDetails.description} theme={theme} />
+          <Row label="Capacity"        value={eventDetails.capacity} theme={theme} />
+          <Row label="Spots Remaining" value={eventDetails.spotsRemaining} theme={theme} />
 
           <View style={styles.buttonRow}>
-            <Button
-              mode="outlined"
-              onPress={() => navigation.goBack()}
-              style={styles.button}
-            >
-              Back
-            </Button>
+            
             <Button
               mode="contained"
               disabled={noSpotsLeft}
@@ -104,10 +100,11 @@ const EventDetailsScreen = ({ route, navigation }) => {
 };
 
 // Small helper component for each row in the card
-const Row = ({ label, value }) => (
-  <View style={styles.row}>
-    <Text style={styles.label}>{label}:</Text>
-    <Text style={styles.value}>{value}</Text>
+// Receives theme as a prop so it can adapt to dark/light mode
+const Row = ({ label, value, theme }) => (
+  <View style={[styles.row, { borderBottomColor: theme.colors.outlineVariant }]}>
+    <Text style={[styles.label, { color: theme.colors.onSurface }]}>{label}:</Text>
+    <Text style={[styles.value, { color: theme.colors.onSurfaceVariant }]}>{value}</Text>
   </View>
 );
 
@@ -116,7 +113,6 @@ export default EventDetailsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e8e8e8',
     padding: 12,
   },
   center: {
@@ -126,7 +122,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   card: {
-    backgroundColor: 'white',
     borderRadius: 12,
     marginBottom: 12,
   },
@@ -134,26 +129,22 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#222',
   },
   row: {
     flexDirection: 'row',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
   label: {
     flex: 1,
     fontWeight: 'bold',
-    color: '#333',
   },
   value: {
     flex: 2,
-    color: '#444',
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginTop: 20,
   },
   button: {

@@ -1,78 +1,85 @@
+Here’s your updated **README section**, rewritten cleanly and professionally, with your new achievement added:
+
+---
+
 # Elevate Horizon Connect
 
 ## Author
 
-- Name: Rosa Maria De Caria
-- Student ID: 881446865
-- Course: Certificate IV in Programming
-- Institution: TAFE NSW
-- Year: 2026
+- **Name:** Rosa Maria De Caria  
+- **Student ID:** 881446865  
+- **Course:** Certificate IV in Programming  
+- **Institution:** TAFE NSW  
+- **Year:** 2026  
 
 ## Tech Stack
 
-Frontend (mobile app):
-- React Native with Expo
-- React Navigation (for moving between screens)
-- React Native Paper (for the UI components)
-- AsyncStorage (to save user preferences)
-- expo-av (for playing sounds)
+### **Frontend (mobile app)**
+- React Native with Expo  
+- React Navigation (stack + bottom tabs)  
+- React Native Paper (UI components)  
+- AsyncStorage (saving user preferences)  
+- expo-av (sound playback)
 
-Backend (server):
-- Node.js with Express
-- Sequelize and SQLite (for the database)
-- Swagger (to document the API)
+### **Backend (server)**
+- Node.js with Express  
+- Sequelize + SQLite  
+- Swagger (API documentation)
 
-Other tools:
-- Visual Studio Code
-- Git and GitHub
-- Material Theme Builder
+### **Other Tools**
+- Visual Studio Code  
+- Git + GitHub  
+- Material Theme Builder  
 
-## What I have done so far
+---
 
-Navigation:
-- Bottom tab navigation with Home, Events, and Settings tabs
-- Stack navigation inside the Events tab (List, Details, Registration)
+## What I Have Done So Far
 
-Home screen:
-- Title and header
-- Logo that plays a sound when tapped
-- Welcome card
+### **Navigation**
+- Bottom tab navigation (Home, Events, Settings)  
+- Stack navigation inside Events (List → Details → Registration)
 
-Events list screen:
-- Shows all events from the API
-- Search bar (only the design for now)
-- Category filter chips (only the design for now)
-- Shows an offline message when there is no internet
+### **Home Screen**
+- Title + header  
+- Logo that plays a sound when tapped  
+- Welcome card  
 
-Event details screen:
-- Shows all event information
-- Register button (disabled when no spots are left)
-- Shows a red warning banner when the event is full
+### **Events List Screen**
+- Fetches all events from the API  
+- Search bar UI (logic coming soon)  
+- Category filter chips UI (logic coming soon)  
+- Offline mode message  
 
-Event registration screen:
-- Form with name and email fields
-- Checks the fields are filled in
-- Shows a success message and goes back to the events list
-- Updates the remaining spots after a registration
+### **Event Details Screen**
+- Full event information  
+- Register button (disabled when full)  
+- Red warning banner when no spots remain  
 
-Settings screen:
-- Light and dark theme toggle
+### **Event Registration Screen**
+- Name + email form  
+- Validation for required fields  
+- Success message + navigation back  
+- Updates remaining spots  
 
+### **Settings Screen**
+- Light/dark theme toggle  
+- **Dark mode now applies across ALL screens (fully fixed)**  
+- (More settings coming soon)
 
-Backend connection:
-- Gets all the events from the API
-- Gets a single event by its ID
-- Sends a registration to the server
-- Saves events locally for offline use
+### **Backend Connection**
+- Get all events  
+- Get event by ID  
+- Send registration  
+- Save events locally for offline use  
 
-## What I still need to do
+---
 
-- Make the search bar actually filter the events
-- Make the category chips actually filter the events
-- Apply the selected font size to the text in the app
-- Make the "View Today's Events" button work
-- Add a "My Registrations" screen
-- Final design check and testing
-- Sound on or off toggle
-- Font size selector (Small, Medium, Large)
-- Saves the settings so they stay after closing the app
+## What I Still Need to Do
+ 
+- Apply selected font size across the app  
+- Make the **“View Today’s Events”** button work  
+- Final design pass + testing  
+- Sound on/off toggle  
+- Font size selector (Small / Medium / Large)  
+  
+

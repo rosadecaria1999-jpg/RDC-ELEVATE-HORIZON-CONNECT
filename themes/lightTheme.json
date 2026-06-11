@@ -1,6 +1,6 @@
 {
   "colors": {
-    "primary": "rgb(0, 100, 146)",
+    "primary": "rgb(0, 26, 66)",
     "onPrimary": "rgb(255, 255, 255)",
     "primaryContainer": "rgb(201, 230, 255)",
     "onPrimaryContainer": "rgb(0, 30, 47)",
@@ -16,7 +16,7 @@
     "onError": "rgb(255, 255, 255)",
     "errorContainer": "rgb(255, 218, 214)",
     "onErrorContainer": "rgb(65, 0, 2)",
-    "background": "rgb(252, 252, 255)",
+    "background": "rgb(0, 100, 146)",
     "onBackground": "rgb(26, 28, 30)",
     "surface": "rgb(252, 252, 255)",
     "onSurface": "rgb(26, 28, 30)",

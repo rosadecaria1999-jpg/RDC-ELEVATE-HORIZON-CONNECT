@@ -2,15 +2,15 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Card, Button, useTheme } from 'react-native-paper';
 import { Audio } from 'expo-av';
-import { useAppPreferences } from '../components/AppPreferencesContext';
-
 
 const imageIndex = {
   logo: require('../assets/images/Logo.jpg'),
 };
 
 const HomeScreen = () => {
-
+  // Gets the current theme (light or dark) from PaperProvider
+  const theme = useTheme();
+  
 
   // ─── Audio playback ───
   const playSound = async () => {
@@ -32,12 +32,14 @@ const HomeScreen = () => {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
       contentContainerStyle={styles.content}
     >
       {/* Header (title only) */}
-      <View style={styles.titleBox}>
-        <Text style={styles.title}>Elevate Horizon Connect</Text>
+      <View style={[styles.titleBox, { backgroundColor: theme.colors.primaryContainer }]}>
+        <Text style={[styles.title, { color: theme.colors.onPrimaryContainer }]}>
+          Elevate Horizon Connect
+        </Text>
       </View>
 
       {/* Logo (tap to play sound) */}
@@ -50,16 +52,15 @@ const HomeScreen = () => {
       </TouchableOpacity>
 
       {/* Welcome card */}
-      <Card style={styles.welcomeCard}>
+      <Card style={[styles.welcomeCard, { backgroundColor: theme.colors.surface }]}>
         <Card.Content>
-          <Text style={styles.welcomeTitle}>Welcome</Text>
-          <Text style={styles.welcomeText}>
+          <Text style={[styles.welcomeTitle, { color: theme.colors.onSurface }]}>Welcome</Text>
+          <Text style={[styles.welcomeText, { color: theme.colors.onSurfaceVariant }]}>
             Find and register for Community Events
           </Text>
           <Button
             mode="outlined"
             style={styles.welcomeButton}
-            textColor="#333"
             onPress={() => { }}
           >
             View Today's Events
@@ -73,11 +74,10 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#3F88B8' },
+  container: { flex: 1 },
   content: { padding: 16 },
 
   titleBox: {
-    backgroundColor: '#7BB0CE',
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 6,
@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2C3E50',
     textAlign: 'center',
   },
 
@@ -100,11 +99,10 @@ const styles = StyleSheet.create({
   },
 
   welcomeCard: {
-    backgroundColor: 'white',
     marginBottom: 20,
     borderRadius: 12,
   },
-  welcomeTitle: { fontSize: 30, fontWeight: 'bold', marginBottom: 10, color: '#2C3E50' },
-  welcomeText: { fontSize: 15, color: '#444', marginBottom: 18 },
-  welcomeButton: { alignSelf: 'flex-start', borderColor: '#333', borderRadius: 4 },
+  welcomeTitle: { fontSize: 30, fontWeight: 'bold', marginBottom: 10 },
+  welcomeText: { fontSize: 15, marginBottom: 18 },
+  welcomeButton: { alignSelf: 'flex-start', borderRadius: 4 },
 });

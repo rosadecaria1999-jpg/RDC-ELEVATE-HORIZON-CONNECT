@@ -12,7 +12,7 @@ const SettingsScreen = () => {
 
   return (
     // The background colour dynamically updates based on the active theme.
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       
       {/* Screen title uses the theme's primary colour for visual consistency. */}
       <Text style={[styles.title, { color: theme.colors.primary }]}>

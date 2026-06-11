@@ -59,9 +59,9 @@ const EventsListScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+      <View style={[styles.centered, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" />
-        <Text>Loading Events...</Text>
+        <Text style={{ color: theme.colors.onBackground }}>Loading Events...</Text>
       </View>
     );
   }
@@ -84,15 +84,16 @@ const EventsListScreen = ({ navigation }) => {
         </View>
       )}
 
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
         {/* Search bar */}
         <Searchbar
           placeholder="Search Events..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          style={styles.searchbar}
-          inputStyle={{ fontSize: theme?.fonts?.bodyLarge?.fontSize || 15 }}
-          iconColor={theme?.colors?.onSurface}
+          style={[styles.searchbar, { backgroundColor: theme.colors.surfaceVariant }]}
+          inputStyle={{ color: theme.colors.onSurface }}
+          iconColor={theme.colors.onSurface}
+          placeholderTextColor={theme.colors.onSurfaceVariant}
         />
 
         {/* Category filters */}
@@ -105,7 +106,7 @@ const EventsListScreen = ({ navigation }) => {
               onPress={() => setSelectedCategory(cat)}
               style={{ marginRight: 2, marginBottom: 2 }}
               buttonColor={selectedCategory === cat ? theme.colors.primary : theme.colors.surfaceVariant}
-              textColor={selectedCategory === cat ? 'white' : theme.colors.onSurfaceVariant}
+              textColor={selectedCategory === cat ? theme.colors.onPrimary : theme.colors.onSurfaceVariant}
             >
               {cat}
             </Button>
@@ -121,11 +122,11 @@ const EventsListScreen = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('EventDetails', { event: item, offline })}
             >
-              <View style={styles.card}>
-                <Text style={styles.cardTitle}>{item?.title}</Text>
-                <Text>{item?.date}</Text>
-                <Text>{item?.location}</Text>
-                <Text>Spots: {item?.spotsRemaining}</Text>
+              <View style={[styles.card, { backgroundColor: theme.colors.surfaceVariant }]}>
+                <Text style={[styles.cardTitle, { color: theme.colors.onSurface }]}>{item?.title}</Text>
+                <Text style={{ color: theme.colors.onSurfaceVariant }}>{item?.date}</Text>
+                <Text style={{ color: theme.colors.onSurfaceVariant }}>{item?.location}</Text>
+                <Text style={{ color: theme.colors.onSurfaceVariant }}>Spots: {item?.spotsRemaining}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -140,8 +141,7 @@ export default EventsListScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3F88B8',
-    padding: 16,
+    padding: 15,
   },
   centered: {
     flex: 1,
@@ -149,8 +149,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchbar: {
-    backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 20,
     marginBottom: 12,
     elevation: 0,
   },
@@ -159,7 +158,6 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     borderRadius: 10,
-    backgroundColor: 'white',
   },
   cardTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 4 },
 });
