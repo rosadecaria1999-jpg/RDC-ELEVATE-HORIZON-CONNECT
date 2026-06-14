@@ -2,18 +2,25 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Card, Button, useTheme } from 'react-native-paper';
 import { Audio } from 'expo-av';
+import { useAppPreferences } from '../components/AppPreferencesContext';
 
 const imageIndex = {
   logo: require('../assets/images/Logo.jpg'),
 };
 
-const HomeScreen = () => {
+// Receives onViewEvents callback from MainNavigator.
+const HomeScreen = ({ onViewEvents }) => {
   // Gets the current theme (light or dark) from PaperProvider
   const theme = useTheme();
-  
+
+  // Read sound and font scale from the context.
+  const { isSoundEnabled, fontScale } = useAppPreferences();
 
   // ─── Audio playback ───
   const playSound = async () => {
+    // If sound is disabled in Settings, do nothing.
+    if (!isSoundEnabled) return;
+
     try {
       const { sound } = await Audio.Sound.createAsync(
         require('../assets/audio/sound.mp3')
@@ -36,8 +43,8 @@ const HomeScreen = () => {
       contentContainerStyle={styles.content}
     >
       {/* Header (title only) */}
-      <View style={[styles.titleBox, { backgroundColor: theme.colors.primaryContainer }]}>
-        <Text style={[styles.title, { color: theme.colors.onPrimaryContainer }]}>
+      <View style={[styles.titleBox, { backgroundColor: theme.colors.primary }]}>
+        <Text style={[styles.title, { color: theme.colors.onPrimary, fontSize: 20 * fontScale }]}>
           Elevate Horizon Connect
         </Text>
       </View>
@@ -54,14 +61,18 @@ const HomeScreen = () => {
       {/* Welcome card */}
       <Card style={[styles.welcomeCard, { backgroundColor: theme.colors.surface }]}>
         <Card.Content>
-          <Text style={[styles.welcomeTitle, { color: theme.colors.onSurface }]}>Welcome</Text>
-          <Text style={[styles.welcomeText, { color: theme.colors.onSurfaceVariant }]}>
+          <Text style={[styles.welcomeTitle, { color: theme.colors.onSurface, fontSize: 28 * fontScale }]}>
+            Welcome
+          </Text>
+          <Text style={[styles.welcomeText, { color: theme.colors.onSurfaceVariant, fontSize: 15 * fontScale }]}>
             Find and register for Community Events
           </Text>
+
+          {/* Shows today's events in the Events tab. */}
           <Button
             mode="outlined"
             style={styles.welcomeButton}
-            onPress={() => { }}
+            onPress={onViewEvents}
           >
             View Today's Events
           </Button>
@@ -84,7 +95,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -102,7 +112,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 12,
   },
-  welcomeTitle: { fontSize: 30, fontWeight: 'bold', marginBottom: 10 },
-  welcomeText: { fontSize: 15, marginBottom: 18 },
+  welcomeTitle: { fontWeight: 'bold', marginBottom: 10 },
+  welcomeText: { marginBottom: 18 },
   welcomeButton: { alignSelf: 'flex-start', borderRadius: 4 },
 });

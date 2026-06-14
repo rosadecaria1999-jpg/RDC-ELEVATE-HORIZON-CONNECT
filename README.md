@@ -43,6 +43,7 @@ Here’s your updated **README section**, rewritten cleanly and professionally, 
 - Title + header  
 - Logo that plays a sound when tapped  
 - Welcome card  
+- Make the **“View Today’s Events”** button work  
 
 ### **Events List Screen**
 - Fetches all events from the API  
@@ -65,6 +66,9 @@ Here’s your updated **README section**, rewritten cleanly and professionally, 
 - Light/dark theme toggle  
 - **Dark mode now applies across ALL screens (fully fixed)**  
 - (More settings coming soon)
+- Font size selector (Small / Medium / Large)  
+- Apply selected font size across the app  
+- Sound on/off toggle 
 
 ### **Backend Connection**
 - Get all events  
@@ -76,10 +80,9 @@ Here’s your updated **README section**, rewritten cleanly and professionally, 
 
 ## What I Still Need to Do
  
-- Apply selected font size across the app  
-- Make the **“View Today’s Events”** button work  
+
 - Final design pass + testing  
-- Sound on/off toggle  
-- Font size selector (Small / Medium / Large)  
+ 
+
   
 

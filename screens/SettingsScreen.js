@@ -1,33 +1,68 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Switch, useTheme } from 'react-native-paper';
+import { Text, Switch, RadioButton, useTheme } from 'react-native-paper';
 import { useAppPreferences } from '../components/AppPreferencesContext';
 
 const SettingsScreen = () => {
-  // Retrieves the current theme state and toggle function from the context.
-  const { isDarkMode, toggleDarkMode } = useAppPreferences();
+  // Retrieve all preferences and toggle functions from the context.
+  const {
+    isDarkMode, toggleDarkMode,
+    isSoundEnabled, toggleSound,
+    fontSize, changeFontSize, fontScale,
+  } = useAppPreferences();
 
-  // Retrieves the active theme object for applying dynamic colours.
+  // Retrieve the active theme for dynamic colours.
   const theme = useTheme();
 
   return (
-    // The background colour dynamically updates based on the active theme.
+    // The background colour stays white-ish in light mode by using surface.
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-      
-      {/* Screen title uses the theme's primary colour for visual consistency. */}
-      <Text style={[styles.title, { color: theme.colors.primary }]}>
+
+      {/* Screen title */}
+      <Text style={[styles.title, { color: theme.colors.primary, fontSize: 28 * fontScale }]}>
         Settings
       </Text>
 
-      {/* Row containing the label and the toggle switch. */}
+      {/* Dark / Light mode row */}
       <View style={styles.row}>
-        <Text style={styles.label}>
+        <Text style={[styles.label, { color: theme.colors.onSurface, fontSize: 16 * fontScale }]}>
           Current Theme: {isDarkMode ? 'Dark' : 'Light'}
         </Text>
-
-        {/* The Switch reflects the current state and triggers the toggle on change. */}
         <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
       </View>
+
+      {/* Sound on / off row */}
+      <View style={styles.row}>
+        <Text style={[styles.label, { color: theme.colors.onSurface, fontSize: 16 * fontScale }]}>
+          Sound: {isSoundEnabled ? 'On' : 'Off'}
+        </Text>
+        <Switch value={isSoundEnabled} onValueChange={toggleSound} />
+      </View>
+
+      {/* Font size section with radio buttons */}
+      <View style={styles.column}>
+        <Text style={[styles.label, { color: theme.colors.onSurface, fontSize: 16 * fontScale, marginBottom: 8 }]}>
+          Font Size
+        </Text>
+        <RadioButton.Group onValueChange={changeFontSize} value={fontSize}>
+          <RadioButton.Item
+            label="Small"
+            value="small"
+            labelStyle={{ color: theme.colors.onSurface, fontSize: 16 * fontScale }}
+          />
+          <RadioButton.Item
+            label="Medium"
+            value="medium"
+            labelStyle={{ color: theme.colors.onSurface, fontSize: 16 * fontScale }}
+          />
+          <RadioButton.Item
+            label="Large"
+            value="large"
+            labelStyle={{ color: theme.colors.onSurface, fontSize: 16 * fontScale }}
+          />
+        </RadioButton.Group>
+      </View>
+
     </ScrollView>
   );
 };
@@ -36,12 +71,15 @@ export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 24 },
+  title: { fontWeight: 'bold', marginBottom: 24 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 12,
   },
-  label: { fontSize: 16, fontWeight: '500' },
+  column: {
+    paddingVertical: 12,
+  },
+  label: { fontWeight: '500' },
 });

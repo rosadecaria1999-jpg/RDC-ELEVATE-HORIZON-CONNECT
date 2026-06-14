@@ -5,13 +5,14 @@ import { getAllEvents } from '../services/apiService';
 import { useAppPreferences } from '../components/AppPreferencesContext';
 
 const EventsListScreen = ({ navigation }) => {
-  const { theme } = useAppPreferences();
+  // Pull theme + fontScale from the context.
+  const { theme, fontScale } = useAppPreferences();
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('Today');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['All', 'Today', 'Education', 'Fitness', 'Music', 'Community', 'Outdoor', 'Entertainment', 'Technology', 'Food', 'Arts', 'Health', 'Networking'];
+  const categories = ['Today', 'All', 'Education', 'Fitness', 'Music', 'Community', 'Outdoor', 'Entertainment', 'Technology', 'Food', 'Arts', 'Health', 'Networking'];
 
   const [loading, setLoading] = useState(true);
   const [offline, setOffline] = useState(false);
@@ -24,7 +25,6 @@ const EventsListScreen = ({ navigation }) => {
   useEffect(() => {
     let updated = [...events];
 
-    // Filter by category
     if (selectedCategory === 'Today') {
       const today = new Date().toISOString().split('T')[0];
       updated = updated.filter((e) => e.date.startsWith(today));
@@ -32,7 +32,6 @@ const EventsListScreen = ({ navigation }) => {
       updated = updated.filter((e) => e.category === selectedCategory);
     }
 
-    // Filter by search text
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       updated = updated.filter(
@@ -61,7 +60,9 @@ const EventsListScreen = ({ navigation }) => {
     return (
       <View style={[styles.centered, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" />
-        <Text style={{ color: theme.colors.onBackground }}>Loading Events...</Text>
+        <Text style={{ color: theme.colors.onBackground, fontSize: 16 * fontScale }}>
+          Loading Events...
+        </Text>
       </View>
     );
   }
@@ -123,13 +124,28 @@ const EventsListScreen = ({ navigation }) => {
               onPress={() => navigation.navigate('EventDetails', { event: item, offline })}
             >
               <View style={[styles.card, { backgroundColor: theme.colors.surfaceVariant }]}>
-                <Text style={[styles.cardTitle, { color: theme.colors.onSurface }]}>{item?.title}</Text>
-                <Text style={{ color: theme.colors.onSurfaceVariant }}>{item?.date}</Text>
-                <Text style={{ color: theme.colors.onSurfaceVariant }}>{item?.location}</Text>
-                <Text style={{ color: theme.colors.onSurfaceVariant }}>Spots: {item?.spotsRemaining}</Text>
+                <Text style={[styles.cardTitle, { color: theme.colors.onSurface, fontSize: 18 * fontScale }]}>
+                  {item?.title}
+                </Text>
+                <Text style={{ color: theme.colors.onSurfaceVariant, fontSize: 14 * fontScale }}>
+                  {item?.date}
+                </Text>
+                <Text style={{ color: theme.colors.onSurfaceVariant, fontSize: 14 * fontScale }}>
+                  {item?.location}
+                </Text>
+                <Text style={{ color: theme.colors.onSurfaceVariant, fontSize: 14 * fontScale }}>
+                  Spots: {item?.spotsRemaining}
+                </Text>
               </View>
             </TouchableOpacity>
           )}
+          ListEmptyComponent={
+            <View style={{ padding: 20, alignItems: 'center' }}>
+              <Text style={{ color: theme.colors.onBackground, fontSize: 16 * fontScale, fontWeight: 'bold' }}>
+                No events found
+              </Text>
+            </View>
+          }
         />
       </View>
     </Surface>
@@ -141,7 +157,7 @@ export default EventsListScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    padding: 16,
   },
   centered: {
     flex: 1,
@@ -149,7 +165,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchbar: {
-    borderRadius: 20,
+    borderRadius: 30,
     marginBottom: 12,
     elevation: 0,
   },
@@ -159,5 +175,5 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 10,
   },
-  cardTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 4 },
+  cardTitle: { fontWeight: 'bold', marginBottom: 4 },
 });
