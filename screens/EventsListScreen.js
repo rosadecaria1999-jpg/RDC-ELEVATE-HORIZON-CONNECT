@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Searchbar, Surface, Button } from 'react-native-paper';
 import { getAllEvents } from '../services/apiService';
 import { useAppPreferences } from '../components/AppPreferencesContext';
 
 const EventsListScreen = ({ navigation }) => {
-  // Pull theme + fontScale from the context.
   const { theme, fontScale } = useAppPreferences();
+
+  // Detect wide screens (tablet or landscape phone).
+  const { width } = useWindowDimensions();
+  const isWide = width >= 600;
+
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('Today');
@@ -18,9 +22,7 @@ const EventsListScreen = ({ navigation }) => {
   const [offline, setOffline] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadEvents();
-  }, []);
+  useEffect(() => { loadEvents(); }, []);
 
   useEffect(() => {
     let updated = [...events];
@@ -35,9 +37,7 @@ const EventsListScreen = ({ navigation }) => {
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       updated = updated.filter(
-        (e) =>
-          e.title.toLowerCase().includes(q) ||
-          e.description.toLowerCase().includes(q)
+        (e) => e.title.toLowerCase().includes(q) || e.description.toLowerCase().includes(q)
       );
     }
 
@@ -86,7 +86,6 @@ const EventsListScreen = ({ navigation }) => {
       )}
 
       <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        {/* Search bar */}
         <Searchbar
           placeholder="Search Events..."
           value={searchQuery}
@@ -97,7 +96,6 @@ const EventsListScreen = ({ navigation }) => {
           placeholderTextColor={theme.colors.onSurfaceVariant}
         />
 
-        {/* Category filters */}
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 16, gap: 8 }}>
           {categories.map((cat) => (
             <Button
@@ -114,13 +112,18 @@ const EventsListScreen = ({ navigation }) => {
           ))}
         </View>
 
-        {/* Events list */}
+       {/* Shows 2 columns on wide screens, 1 column on phones. */}
+       
         <FlatList
           data={filteredEvents}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.listContent}
+          numColumns={isWide ? 2 : 1}
+          key={isWide ? 'wide' : 'narrow'}
+          columnWrapperStyle={isWide ? { gap: 12 } : undefined}
           renderItem={({ item }) => (
             <TouchableOpacity
+              style={isWide ? { flex: 1 } : undefined}
               onPress={() => navigation.navigate('EventDetails', { event: item, offline })}
             >
               <View style={[styles.card, { backgroundColor: theme.colors.surfaceVariant }]}>
@@ -155,25 +158,10 @@ const EventsListScreen = ({ navigation }) => {
 export default EventsListScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  searchbar: {
-    borderRadius: 30,
-    marginBottom: 12,
-    elevation: 0,
-  },
+  container: { flex: 1, padding: 16 },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  searchbar: { borderRadius: 30, marginBottom: 12, elevation: 0 },
   listContent: { paddingBottom: 20 },
-  card: {
-    padding: 16,
-    marginBottom: 12,
-    borderRadius: 10,
-  },
+  card: { padding: 16, marginBottom: 12, borderRadius: 10 },
   cardTitle: { fontWeight: 'bold', marginBottom: 4 },
 });

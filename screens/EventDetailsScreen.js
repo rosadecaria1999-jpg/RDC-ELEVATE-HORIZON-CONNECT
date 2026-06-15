@@ -1,37 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native';
 import { Card, Button, useTheme } from 'react-native-paper';
 import { getEventById } from '../services/apiService';
 
 const EventDetailsScreen = ({ route, navigation }) => {
-  // Gets the current theme (light or dark) from PaperProvider
   const theme = useTheme();
   const { event, offline } = route.params;
+
+  // Detect wide screens for responsive layout.
+  const { width } = useWindowDimensions();
+  const isWide = width >= 600;
 
   const [eventDetails, setEventDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadDetails();
-  }, []);
+  useEffect(() => { loadDetails(); }, []);
 
   async function loadDetails() {
-    // If offline, just use the event passed from the list
     if (offline) {
       setEventDetails(event);
       setLoading(false);
       return;
     }
-
-    // Otherwise, fetch fresh data from the API
     try {
       const result = await getEventById(event.id);
-      if (result.success) {
-        setEventDetails(result.event);
-      } else {
-        setError(result.error);
-      }
+      if (result.success) setEventDetails(result.event);
+      else setError(result.error);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -59,7 +54,11 @@ const EventDetailsScreen = ({ route, navigation }) => {
   const noSpotsLeft = eventDetails.spotsRemaining === 0;
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+      // Centered with max width on wide screens.
+      contentContainerStyle={isWide ? { maxWidth: 700, alignSelf: 'center', width: '100%' } : undefined}
+    >
       <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
         <Card.Content>
           <Text style={[styles.title, { color: theme.colors.onSurface }]}>{eventDetails.title}</Text>
@@ -73,13 +72,10 @@ const EventDetailsScreen = ({ route, navigation }) => {
           <Row label="Spots Remaining" value={eventDetails.spotsRemaining} theme={theme} />
 
           <View style={styles.buttonRow}>
-            
             <Button
               mode="contained"
               disabled={noSpotsLeft}
-              onPress={() =>
-                navigation.navigate('EventRegistration', { event: eventDetails })
-              }
+              onPress={() => navigation.navigate('EventRegistration', { event: eventDetails })}
               style={styles.button}
             >
               Register
@@ -99,8 +95,6 @@ const EventDetailsScreen = ({ route, navigation }) => {
   );
 };
 
-// Small helper component for each row in the card
-// Receives theme as a prop so it can adapt to dark/light mode
 const Row = ({ label, value, theme }) => (
   <View style={[styles.row, { borderBottomColor: theme.colors.outlineVariant }]}>
     <Text style={[styles.label, { color: theme.colors.onSurface }]}>{label}:</Text>
@@ -111,54 +105,15 @@ const Row = ({ label, value, theme }) => (
 export default EventDetailsScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 12,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  card: {
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  row: {
-    flexDirection: 'row',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-  },
-  label: {
-    flex: 1,
-    fontWeight: 'bold',
-  },
-  value: {
-    flex: 2,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 20,
-  },
-  button: {
-    minWidth: 100,
-  },
-  errorBanner: {
-    backgroundColor: '#e74c3c',
-    padding: 14,
-    borderRadius: 6,
-    marginTop: 8,
-  },
-  errorBannerText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: '500',
-  },
+  container: { flex: 1, padding: 12 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  card: { borderRadius: 12, marginBottom: 12 },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 16 },
+  row: { flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1 },
+  label: { flex: 1, fontWeight: 'bold' },
+  value: { flex: 2 },
+  buttonRow: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 20 },
+  button: { minWidth: 100 },
+  errorBanner: { backgroundColor: '#e74c3c', padding: 14, borderRadius: 6, marginTop: 8 },
+  errorBannerText: { color: 'white', textAlign: 'center', fontWeight: '500' },
 });

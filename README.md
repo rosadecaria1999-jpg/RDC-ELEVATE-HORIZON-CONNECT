@@ -76,12 +76,8 @@ Here’s your updated **README section**, rewritten cleanly and professionally, 
 - Send registration  
 - Save events locally for offline use  
 
----
 
-## What I Still Need to Do
- 
 
-- Final design pass + testing  
  
 
   
